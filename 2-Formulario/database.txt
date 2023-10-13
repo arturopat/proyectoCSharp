@@ -1,5 +1,2 @@
-david ,amircar,Servidores,Redes,Hombre,Astolfo,jueves, 5 de octubre de 2023,9DB91D73B07454857BC90BFD3DD21296
-manuel,  chan, Redes, Mujer, Astolfo, jueves, 5 de octubre de 2023,A7A6260F35EC80A5E3DA565036723FB6
-manuel y rodolfo,  ananias chan, Redes, Mujer, Astolfo, jueves, 5 de octubre de 2023,C840846B9D4B7ED227FCEA8FAAC51A31
-Arturo, Leonardo, Servidores, Hombre, Astolfo, jueves, 5 de octubre de 2023
-Arturo,Pat,Servidores,Redes,Hombre,Rodolfo astolfo,viernes, 6 de octubre de 2023
+arturo modificado, pat modificado, Servidores, Hombre, Rodolfo, jueves, 12 de octubre de 2023,3806EE1CB9D0F8AD66FDCA864D05A4FA
+arturo leonardo mod,pat poot mod,Servidores,Redes,Hombre,Rodolfo astolfo,jueves, 12 de octubre de 2023,6468DD33F7E8CEB79E1C68B5AA07F556

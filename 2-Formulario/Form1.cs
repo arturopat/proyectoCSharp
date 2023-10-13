@@ -131,6 +131,11 @@ namespace _2_Formulario
                     txt1.Text = data[0];
                     txt2.Text = data[1];
 
+                    if (line.Contains("Usuario modificado"))
+                    {
+                        MessageBox.Show("¡Integridad del archivo comprometida! Se ha detectado un usuario modificado.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+
 
                     // checkbox seleccion
                     if (data[2] == "Servidores" && data[3] == "Redes" )
@@ -215,7 +220,7 @@ namespace _2_Formulario
                 }
                 else
                 {
-                    // Si llegamos al final del archivo, cerramos el StreamReader
+                    // cuando se llega al final del archivo terminas el proceso de streamreader
                     sr.Close();
                     sr = null;
                     contador.Text = "Fin del archivo";
@@ -254,6 +259,7 @@ namespace _2_Formulario
             MessageBox.Show(line);
             */
 
+            /*
             int num = int.Parse(contador.Text);
 
             if(num > 1)
@@ -294,6 +300,53 @@ namespace _2_Formulario
                     txt2.Text = partes[1];
                 }
             }
+            */
+
+            int num = int.Parse(contador.Text);
+
+            if (num > 1)
+            {
+                num--;
+                contador.Text = num.ToString();
+
+                try
+                {
+                    StreamReader sr = new StreamReader("C:\\Users\\artur\\source\\repos\\introduccion C#\\2-Formulario\\2-Formulario\\database.txt");
+                    line = sr.ReadLine();
+                    lectura = line;
+
+                    int c = 1;
+
+                    while (line != null)
+                    {
+                        line = sr.ReadLine();
+                        c++;
+
+                        
+                        if (c == num)
+                        {
+                            lectura = line;
+                            if (line.Contains("Usuario modificado"))
+                            {
+                                MessageBox.Show("¡Integridad del archivo comprometida! Se ha detectado un usuario modificado.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
+                            break;
+                        }
+                    }
+                    sr.Close();
+
+                    string[] partes = lectura.Split(',');
+
+                    txt1.Text = partes[0];
+                    txt2.Text = partes[1];
+
+                    
+                }
+                catch (Exception error)
+                {
+                    Console.WriteLine("Exception: " + error.Message);
+                }
+            }
         }
 
 
@@ -321,6 +374,7 @@ namespace _2_Formulario
 
             string archivo = "C:\\Users\\artur\\source\\repos\\introduccion C#\\2-Formulario\\2-Formulario\\database.txt";
             string archivoTemp = "C:\\Users\\artur\\source\\repos\\introduccion C#\\2-Formulario\\2-Formulario\\database_temp.txt";
+            string archivoRespaldo = "C:\\Users\\artur\\source\\repos\\introduccion C#\\2-Formulario\\2-Formulario\\respaldo_global.txt";
 
             bool servidoresSeleccionado = cb1.Checked;
             bool redesSeleccionado = cb2.Checked;
@@ -345,7 +399,11 @@ namespace _2_Formulario
 
                     string nuevoHash = CalculateMD5Hash(nuevaLinea);
 
-                    lineas[num - 1] = nuevaLinea + "," + nuevoHash;
+                    string nuevaLineaRespaldo = nuevaLinea + "," + nuevoHash + ", Usuario modificado";
+                    File.AppendAllText(archivoRespaldo, nuevaLineaRespaldo + Environment.NewLine);
+
+                    nuevaLinea = nuevaLinea + "," + nuevoHash;
+                    lineas[num - 1] = nuevaLinea;
 
                     if (sr != null)
                     {
@@ -359,7 +417,7 @@ namespace _2_Formulario
 
                     File.Move(archivoTemp, archivo);
 
-                    MessageBox.Show($"Usuario modificado:\n{nuevaLinea}\nHash: {nuevoHash}", "Actualización Exitosa");
+                    MessageBox.Show($"Usuario modificado:\n{nuevaLinea}\nHash: {nuevoHash}\nUsuario modificado", "Actualización Exitosa");
                 }
                 else
                 {
@@ -371,6 +429,9 @@ namespace _2_Formulario
                 MessageBox.Show("Exception: " + error.Message);
             }
         }
+
+
+
 
 
         // metodo para generar el hash
@@ -390,6 +451,99 @@ namespace _2_Formulario
 
                 return sb.ToString();
             }
+        }
+
+        // boton para comprobar
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            string archivoOriginal = "C:\\Users\\artur\\source\\repos\\introduccion C#\\2-Formulario\\2-Formulario\\database.txt";
+            string archivoRespaldo = "C:\\Users\\artur\\source\\repos\\introduccion C#\\2-Formulario\\2-Formulario\\respaldo_global.txt";
+
+            try
+            {
+                List<string> hashesDatabase = new List<string>();
+                List<string> hashesRespaldo = new List<string>();
+
+                // Leer todos los hashes del archivo de base de datos
+                using (StreamReader sr = new StreamReader(archivoOriginal))
+                {
+                    string line;
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        string[] parts = line.Split(',');
+                        if (parts.Length >= 9)
+                        {
+                            string hash = parts[8];
+                            hashesDatabase.Add(hash);
+                        }
+                    }
+                }
+
+                // revisar nuevamente esta parte
+                using (StreamReader sr = new StreamReader(archivoRespaldo))
+                {
+                    string line;
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        string[] parts = line.Split(',');
+                        if (parts.Length >= 9)
+                        {
+                            string hash = parts[8];
+                            hashesRespaldo.Add(hash);
+                        }
+                    }
+                }
+
+                // esto busca los datos en camunes (lineas)
+                List<string> hashesComunes = hashesDatabase.Intersect(hashesRespaldo).ToList();
+
+                if (hashesComunes.Any())
+                {
+                    StringBuilder usuariosEncontrados = new StringBuilder();
+                    foreach (string hash in hashesComunes)
+                    {
+                        // busco la liena en el archivo original
+                        string usuario = BuscarUsuarioPorHash(archivoOriginal, hash);
+                        usuariosEncontrados.AppendLine(usuario);
+
+                        string usuarioRespaldo = BuscarUsuarioPorHash(archivoRespaldo, hash);
+                        usuariosEncontrados.AppendLine(usuarioRespaldo);
+                    }
+
+                    MessageBox.Show($"Usuarios encontrados en ambos archivos:\n{usuariosEncontrados.ToString()}", "Usuarios Comunes");
+                }
+                else
+                {
+                    MessageBox.Show("No se encontraron usuarios comunes en ambos archivos.", "Usuarios Comunes");
+                }
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show("Exception: " + error.Message);
+            }
+        }
+
+        private string BuscarUsuarioPorHash(string archivo, string hash)
+        {
+            using (StreamReader sr = new StreamReader(archivo))
+            {
+                string line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    string[] parts = line.Split(',');
+                    if (parts.Length >= 9)
+                    {
+                        string hashLinea = parts[8];
+                        if (hashLinea == hash)
+                        {
+                            return line;
+                        }
+                    }
+                }
+            }
+
+            // si no encontramos el hash devolvemos una cadena vacia
+            return string.Empty;
         }
 
 

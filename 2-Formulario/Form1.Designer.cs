@@ -44,6 +44,7 @@
             this.contador = new System.Windows.Forms.TextBox();
             this.btnActualizar = new System.Windows.Forms.Button();
             this.btnLimpiar = new System.Windows.Forms.Button();
+            this.comprobar = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -202,11 +203,26 @@
             this.btnLimpiar.UseVisualStyleBackColor = true;
             this.btnLimpiar.Click += new System.EventHandler(this.button3_Click);
             // 
+            // comprobar
+            // 
+            this.comprobar.BackColor = System.Drawing.SystemColors.MenuHighlight;
+            this.comprobar.Font = new System.Drawing.Font("Arial Black", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comprobar.ForeColor = System.Drawing.SystemColors.Menu;
+            this.comprobar.Location = new System.Drawing.Point(459, 58);
+            this.comprobar.Name = "comprobar";
+            this.comprobar.Size = new System.Drawing.Size(233, 47);
+            this.comprobar.TabIndex = 20;
+            this.comprobar.Text = "Comprobar Integridad";
+            this.comprobar.UseVisualStyleBackColor = false;
+            this.comprobar.Click += new System.EventHandler(this.button2_Click_1);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.Cyan;
             this.ClientSize = new System.Drawing.Size(715, 450);
+            this.Controls.Add(this.comprobar);
             this.Controls.Add(this.btnLimpiar);
             this.Controls.Add(this.btnActualizar);
             this.Controls.Add(this.contador);
@@ -249,6 +265,7 @@
         private System.Windows.Forms.TextBox contador;
         private System.Windows.Forms.Button btnActualizar;
         private System.Windows.Forms.Button btnLimpiar;
+        private System.Windows.Forms.Button comprobar;
     }
 }
 
